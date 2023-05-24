@@ -12,5 +12,5 @@ using InvestApi.Models;
         {
         }
 
-        public DbSet<InvestApi.Models.Ordem> Ordem { get; set; } = null;
+        public DbSet<InvestApi.Models.Ordem>? Ordem { get; set; } = default;
     }

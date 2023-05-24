@@ -22,23 +22,17 @@ namespace InvestApi.Controllers
 
         // GET: api/Ordens
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ordem>>> GetOrdem()
-        {
-          if (_context.Ordem == null)
-          {
-              return NotFound();
-          }
-            return await _context.Ordem.ToListAsync();
+        public async Task<ActionResult<IEnumerable<OrdemDTO>>> GetOrdem()
+        {         
+            return await _context.Ordem.Select(x => OrdemToDTO(x)).ToListAsync();
+            
         }
 
         // GET: api/Ordens/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ordem>> GetOrdem(int id)
+        public async Task<ActionResult<OrdemDTO>> GetOrdem(int id)
         {
-          if (_context.Ordem == null)
-          {
-              return NotFound();
-          }
+          
             var ordem = await _context.Ordem.FindAsync(id);
 
             if (ordem == null)
@@ -46,7 +40,7 @@ namespace InvestApi.Controllers
                 return NotFound();
             }
 
-            return ordem;
+            return OrdemToDTO(ordem);
         }
 
         // PUT: api/Ordens/5
@@ -119,5 +113,16 @@ namespace InvestApi.Controllers
         {
             return (_context.Ordem?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        //Converter odem em ordemDTO
+        private static OrdemDTO OrdemToDTO(Ordem ordem) =>
+         new OrdemDTO
+        {
+              Id = ordem.Id,
+              tickler = ordem.tickler,
+              quantidade = ordem.quantidade,
+              valor = ordem.valor,
+              total = ordem.calculaTotal()
+        };
     }
 }
